@@ -46,21 +46,23 @@ gulp.task('clean', function() {
 
 gulp.task('sass', function() {
   return gulp.src('app/assets/scss/*.scss')
-    .pipe(changed('build/css'))
+    .pipe(changed(config.css))
     .pipe(sass({
       paths: [path.join(__dirname, 'scss', 'includes')]
     }))
-    .pipe(gulp.dest('build/css'))
+    .pipe(gulp.dest(config.css))
     .on('error', gutil.log);
 });
 
 gulp.task('sass:watch', function() {
   watch(config.sass.watch, function(files) {
     return files
+      .pipe(sourcemaps.init())
       .pipe(sass({
         paths: [path.join(__dirname, 'scss', 'includes')]
       }))
-      .pipe(gulp.dest('build/css'))
+      .pipe(sourcemaps.write('../maps'))
+      .pipe(gulp.dest(config.css))
       .on('error', gutil.log);
   });
 });
@@ -68,6 +70,7 @@ gulp.task('sass:watch', function() {
 gulp.task('sass:build', function() {
   return gulp.src('app/assets/scss/*.scss')
     .pipe(changed('build/css'))
+    .pipe(sourcemaps.init())
     .pipe(sass({
       paths: [path.join(__dirname, 'scss', 'includes')]
     }))
@@ -76,6 +79,7 @@ gulp.task('sass:build', function() {
       cascade: false
     }))
     .pipe(minifyCss({compatibility: 'ie8'}))
+    .pipe(sourcemaps.write('../maps'))
     .pipe(gulp.dest('build/css'))
     .on('error', gutil.log);
 });
