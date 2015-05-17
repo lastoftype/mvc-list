@@ -1,11 +1,3 @@
-# Gulp/Sass Boilerplate
+# MVC list 
 
-Just an ongoing project to make other projects quicker to start.
-
-Requires npm, Bower and Gulp globally installed. 
-
-Then get everything started with:
-
-```
-npm i && bower i
-```
+Just starting this project... More to come.
