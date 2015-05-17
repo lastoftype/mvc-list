@@ -9,6 +9,7 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="app/assets/css/vendors.css">
     <link href="app/assets/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -18,9 +19,28 @@
 </head>
 
 <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="target-wrapper">
+                    <!-- /.ui-widget -->
+                    <div class="input-group">
+                        <input type="text" id="tags" class="form-control input-lg" aria-label="...">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-lg btn-primary">Add</button>
+                        </div><!-- /btn-group -->
+                    </div><!-- /input-group -->
+                    <div id="target"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="app/bower_components/jquery-ui/jquery-ui.js"></script>
     <script src="app/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
+    <script src="app/bower_components/spine/lib/spine.js"></script>
+    <script src="app/bower_components/spine/lib/local.js"></script>
     <script src="app/assets/js/main.js"></script>
 </body>
 

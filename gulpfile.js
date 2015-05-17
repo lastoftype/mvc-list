@@ -23,82 +23,45 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var watch = require('gulp-watch');
+var plumber = require('gulp-plumber');
 
 
-var config = {
-  sass: {
-    watch: ['app/assets/scss/*.scss', 'app/assets/scss/**/*.scss'],
-    compile: ['app/assets/scss/main.scss', 'app/assets/scss/vendors.scss']
-  },
-  js: {
-    watch: ['app/assets/js/*.js','app/assets/js/**/*.js'],
-    compile: ['app/assets/js/*.js','app/assets/js/**/*.js']
-  },
-  css: 'app/assets/css'
+var bowerPath = 'app/bower_components';
+
+var paths = {
+    js: {
+        vendors: [
+            'app/bower_components/js-signals/dist/signals.js',
+            'app/bower_components/mustache/mustache.js',
+            'app/bower_components/spine/lib/spine.js',
+            'app/bower_components/spine/lib/local.js'
+        ],
+        dist: 'dist/js'
+    },
+    files: ['*.html'],
+    scss: ['app/assets/scss/*.scss', 'app/assets/scss/**/*.scss'],
+    css: 'app/assets/css'
 };
 
-gulp.task('clean', function() {
-  return gulp.src('build', {
-      read: false
-    })
-    .pipe(clean());
-});
-
 gulp.task('sass', function() {
-  return gulp.src('app/assets/scss/*.scss')
-    .pipe(changed(config.css))
-    .pipe(sass({
-      paths: [path.join(__dirname, 'scss', 'includes')]
-    }))
-    .pipe(gulp.dest(config.css))
-    .on('error', gutil.log);
-});
-
-gulp.task('sass:watch', function() {
-  watch(config.sass.watch, function(files) {
-    return files
+    gulp.src(paths.scss)
+        .pipe(plumber())
       .pipe(sourcemaps.init())
-      .pipe(sass({
-        paths: [path.join(__dirname, 'scss', 'includes')]
-      }))
-      .pipe(sourcemaps.write('../maps'))
-      .pipe(gulp.dest(config.css))
-      .on('error', gutil.log);
-  });
+        .pipe(sass())
+        .pipe(autoprefixer({
+            browsers: ['> 5% in US','Firefox >= 20'],
+            cascade: true
+        }))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(paths.css));
 });
 
-gulp.task('sass:build', function() {
-  return gulp.src('app/assets/scss/*.scss')
-    .pipe(changed('build/css'))
-    .pipe(sourcemaps.init())
-    .pipe(sass({
-      paths: [path.join(__dirname, 'scss', 'includes')]
-    }))
-    .pipe(autoprefixer({
-      browsers: ['last 2 versions'],
-      cascade: false
-    }))
-    .pipe(minifyCss({compatibility: 'ie8'}))
-    .pipe(sourcemaps.write('../maps'))
-    .pipe(gulp.dest('build/css'))
-    .on('error', gutil.log);
+// Rerun the task when a file changes
+gulp.task('watch', function() {
+    gulp.watch(paths.scss, ['sass']);
 });
 
-// Compile scripts
-gulp.task('scripts', function() {
-  return gulp.src(config.js.compile)
-    .pipe(concat('main.js'))
-    .pipe(gulp.dest('build/js'))
-    .pipe(filesize())
-    .pipe(uglify())
-    .pipe(rename('main.min.js'))
-    .pipe(gulp.dest('build/js'))
-    .pipe(filesize())
-    .on('error', gutil.log)
-});
+// The default task (called when you run `gulp` from cli)
+gulp.task('default', ['watch', 'sass']);
 
-gulp.task('scripts:watch', function() {
-  gulp.watch(config.js.watch, ['scripts']);
-});
 
-gulp.task('default', ['sass:watch']);
